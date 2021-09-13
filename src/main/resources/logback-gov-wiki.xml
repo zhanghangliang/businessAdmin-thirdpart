@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<property name="logBase" value="/opt/logs/govwiki" />
+	<property name="appName" value="gov-wiki-admin" />
+	<property name="maxHistory" value="10" />
+	<property name="maxFileSize" value="30MB" />
+	<property name="totalSizeCap" value="1000MB" />
+	<property name="all_maxHistory" value="10" />
+	<property name="all_maxFileSize" value="10MB" />
+	<property name="all_totalSizeCap" value="100MB" />  
+	<property name="level" value="INFO" />  
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %X{user} %-5level %logger{50} - %msg%n</Pattern>
+		</encoder>
+	</appender>
+	<appender name="log_info"  class="ch.qos.logback.core.rolling.RollingFileAppender">    
+		<!-- temp ：存放临时日志的文件夹 -->
+		<File>${logBase}/${appName}/temp/info.log</File>  
+		<append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> 
+            <!--日志文件输出的文件名--> 
+            <FileNamePattern>${logBase}/${appName}/%d{yyyy-MM-dd}/info.%i.log</FileNamePattern>  
+            <!--日志文件保留天数 日志最大空间，当日志最大空间时，重新开启一个新的空间，当数量大于totalSize/maxfileSize 后，日志开始覆盖 --> 
+            <maxFileSize>${maxFileSize}</maxFileSize>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+            <maxHistory>${maxHistory}</maxHistory> 
+        </rollingPolicy>    
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">  
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %X{user} %-5level %logger{50} - %msg%n</pattern>    
+        	<charset>UTF-8</charset>
+        </encoder>  
+        <!-- 日志过滤 -->
+       <filter class="ch.qos.logback.classic.filter.LevelFilter">  
+            <level>INFO</level>  
+            <onMatch>ACCEPT</onMatch>  
+            <onMismatch>DENY</onMismatch>  
+        </filter>
+    </appender>
+    <appender name="log_error"  class="ch.qos.logback.core.rolling.RollingFileAppender">    
+		<File>${logBase}/${appName}/temp/error.log</File>  
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> 
+            <FileNamePattern>${logBase}/${appName}/%d{yyyy-MM-dd}/error.%i.log</FileNamePattern>  
+             <maxFileSize>${maxFileSize}</maxFileSize>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+            <maxHistory>${maxHistory}</maxHistory> 
+        </rollingPolicy>    
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">  
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %X{user} %-5level %logger{50} - %msg%n</pattern>    
+        	<charset>UTF-8</charset>
+        </encoder>  
+       <filter class="ch.qos.logback.classic.filter.LevelFilter">  
+            <level>ERROR</level>  
+            <onMatch>ACCEPT</onMatch>  
+            <onMismatch>DENY</onMismatch>  
+        </filter>
+    </appender>
+     <appender name="log_debug"  class="ch.qos.logback.core.rolling.RollingFileAppender">    
+		<File>${logBase}/${appName}/temp/debug.log</File>  
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> 
+            <FileNamePattern>${logBase}/${appName}/%d{yyyy-MM-dd}/debug.%i.log</FileNamePattern>  
+             <maxFileSize>${maxFileSize}</maxFileSize>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+            <maxHistory>${maxHistory}</maxHistory> 
+        </rollingPolicy>    
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">  
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %X{user} %-5level %logger{50} - %msg%n</pattern>    
+        	<charset>UTF-8</charset>
+        </encoder>  
+       <filter class="ch.qos.logback.classic.filter.LevelFilter">  
+            <level>DEBUG</level>  
+            <onMatch>ACCEPT</onMatch>  
+            <onMismatch>DENY</onMismatch>  
+        </filter>
+    </appender>
+    <appender name="log_warn"  class="ch.qos.logback.core.rolling.RollingFileAppender">    
+		<File>${logBase}/${appName}/temp/warn.log</File>  
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> 
+            <FileNamePattern>${logBase}/${appName}/%d{yyyy-MM-dd}/warn.%i.log</FileNamePattern>  
+             <maxFileSize>${maxFileSize}</maxFileSize>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+            <maxHistory>${maxHistory}</maxHistory> 
+        </rollingPolicy>    
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">  
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %X{user} %-5level %logger{50} - %msg%n</pattern>    
+        	<charset>UTF-8</charset>
+        </encoder>  
+       <filter class="ch.qos.logback.classic.filter.LevelFilter">  
+            <level>WARN</level>  
+            <onMatch>ACCEPT</onMatch>  
+            <onMismatch>DENY</onMismatch>  
+        </filter>
+    </appender>
+    <appender name="log_trace"  class="ch.qos.logback.core.rolling.RollingFileAppender">    
+		<File>${logBase}/${appName}/temp/trace.log</File>  
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> 
+            <FileNamePattern>${logBase}/${appName}/%d{yyyy-MM-dd}/trace.%i.log</FileNamePattern>  
+             <maxFileSize>${maxFileSize}</maxFileSize>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+            <maxHistory>${maxHistory}</maxHistory> 
+        </rollingPolicy>    
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">  
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %X{user} %-5level %logger{50} - %msg%n</pattern>    
+        	<charset>UTF-8</charset>
+        </encoder>  
+       <filter class="ch.qos.logback.classic.filter.LevelFilter">  
+            <level>TRACE</level>  
+            <onMatch>ACCEPT</onMatch>  
+            <onMismatch>DENY</onMismatch>  
+        </filter>
+    </appender>
+    <appender name="log_all"  class="ch.qos.logback.core.rolling.RollingFileAppender">    
+		<File>${logBase}/${appName}/temp/all.log</File>  
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> 
+            <FileNamePattern>${logBase}/${appName}/%d{yyyy-MM-dd}/all.%i.log</FileNamePattern>  
+             <maxFileSize>${maxFileSize}</maxFileSize>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+            <maxHistory>${maxHistory}</maxHistory> 
+        </rollingPolicy>    
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">  
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %X{user} %-5level %logger{50} - %msg%n</pattern>    
+        	<charset>UTF-8</charset>
+        </encoder>  
+    </appender> 
+    
+    
+    
+    <!--druid慢查询日志输出，没有使用druid监控的去掉这部分以及下面的一个相关logger-->
+    <appender name="log_druid" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 正在记录的日志文件的路径及文件名 -->
+        <file>${logBase}/${appName}/temp/druid.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${logBase}/${appName}/%d{yyyy-MM-dd}/druid.%i.log</FileNamePattern>  
+             <maxFileSize>${maxFileSize}</maxFileSize>
+            <totalSizeCap>${totalSizeCap}</totalSizeCap>
+            <maxHistory>${maxHistory}</maxHistory> 
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">  
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %X{user} %-5level %logger{50} - %msg%n</pattern>    
+        	<charset>UTF-8</charset>
+        </encoder>
+        <!--过滤日志-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>  
+            <onMismatch>DENY</onMismatch> 
+        </filter>
+    </appender>
+    <!--druid相关logger，additivity="false" 设置打印信息行为不向上级传递-->
+    <logger name="com.alibaba.druid.filter.stat.StatFilter" level="ERROR" additivity="false">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="log_druid" />
+    </logger> 
+    <root>
+    	<level value="${level}" />
+    	<appender-ref ref="STDOUT" />
+		<appender-ref ref="log_info" />
+		<appender-ref ref="log_error"/>
+		<appender-ref ref="log_debug"/>
+		<appender-ref ref="log_warn"/>
+		<appender-ref ref="log_trace"/>
+		<appender-ref ref="log_all"/>
+    </root>
+</configuration>
