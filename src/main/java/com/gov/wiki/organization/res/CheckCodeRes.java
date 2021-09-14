@@ -12,4 +12,10 @@ import lombok.experimental.Accessors;
 public class CheckCodeRes {
     @ApiModelProperty(value = "结果")
     private Integer checkstate;
+
+    @ApiModelProperty(value = "验证成功并登录")
+    private String token;
+
+    @ApiModelProperty(value = "结果详情")
+    private String checkstateDesc;
 }

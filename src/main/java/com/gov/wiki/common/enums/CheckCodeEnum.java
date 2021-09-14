@@ -3,7 +3,8 @@ package com.gov.wiki.common.enums;
 public class CheckCodeEnum {
     public enum CheckState{
         FAIL(0,"失败"),
-        SUCCESS(1,"通过");
+        SUCCESS(1,"通过"),
+        DOES_NOT_EXIST(-1,"此手机号未注册");
 
         private int key;
         private String value;

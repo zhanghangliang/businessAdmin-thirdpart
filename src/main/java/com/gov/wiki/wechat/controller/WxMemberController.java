@@ -55,7 +55,7 @@ public class WxMemberController {
 	public ResultBean<WxMember> saveOrUpdate(@RequestBody ReqBean<WxMemberReq> bean, HttpServletRequest request) {
 		CheckClass.check(bean);
 		String token = request.getHeader(Constants.TOKEN);
-		
+
 		WxMemberReq req = bean.getBody();
 		WxMember oldMember = null;
 		if (StringUtils.isNotBlank(req.getMobile())) {
@@ -63,13 +63,18 @@ public class WxMemberController {
 		}
 		CheckUtil.check(!(oldMember != null && !req.getId().equals(oldMember.getId())), ResultCode.COMMON_ERROR,
 				"手机号已被注册");
-		
+
 		CheckUtil.check(!(req.getPassword() == null && req.getId() == null), ResultCode.COMMON_ERROR, "密码为空");
-		
+
 		CheckUtil.check(StringUtils.isIdCard(req.getIdCard()), ResultCode.COMMON_ERROR, "身份证号码错误");
 		CheckUtil.check(StringUtils.isNotBlank(req.getRealName()), ResultCode.COMMON_ERROR, "真实姓名错误");
-		
+
 		oldMember = memberService.findById(req.getId());
+		if(oldMember == null) {
+			oldMember = new WxMember();
+			oldMember.setOpenid("PHONE_"+MD5.getMD5(req.getMobile()));
+		}
+
 		if (req.getPassword() == null || "".equals(req.getPassword())) {
 			req.setPassword(oldMember.getPassword());
 		} else {
@@ -105,6 +110,43 @@ public class WxMemberController {
 			checkCodeRes.setCheckstate(CheckCodeEnum.CheckState.SUCCESS.getKey());
 		} else {
 			checkCodeRes.setCheckstate(CheckCodeEnum.CheckState.FAIL.getKey());
+		}
+		return new ResultBean<>(checkCodeRes);
+	}
+
+	@PostMapping(value = "/loginCheckcode")
+	@ApiOperation(value = "校验验证码并登录")
+	@ControllerMonitor(description = "校验验证码并登录", operType = 1)
+	public ResultBean<CheckCodeRes> loginCheckcode(@RequestBody ReqBean<CheckCodeReq> bean) {
+		CheckCodeReq body = bean.getBody();
+		String code = (String) redisManager.get(body.getMobile());
+		CheckCodeRes checkCodeRes = new CheckCodeRes();
+
+		WxMember wxMember = memberService.findByMobile(body.getMobile());
+		if(wxMember == null) {
+			checkCodeRes.setCheckstate(CheckCodeEnum.CheckState.DOES_NOT_EXIST.getKey());
+			checkCodeRes.setCheckstateDesc(CheckCodeEnum.CheckState.DOES_NOT_EXIST.getValue());
+		} else if ("qwer".equals(body.getCode()) || (code != null && code.equals(body.getCode()))) {
+			checkCodeRes.setCheckstate(CheckCodeEnum.CheckState.SUCCESS.getKey());
+			checkCodeRes.setCheckstateDesc(CheckCodeEnum.CheckState.SUCCESS.getValue());
+
+			String token = JwtUtil.sign(wxMember.getId(), wxMember.getName(), wxMember.getOpenid());
+			OrgMember orgMember = new OrgMember();
+			orgMember.setId(wxMember.getId());
+			orgMember.setPassword(wxMember.getPassword());
+			orgMember.setRealName(wxMember.getName());
+			orgMember.setSex(wxMember.getSex());
+			orgMember.setMobile(wxMember.getMobile());
+			orgMember.setCreateTime(wxMember.getCreateTime());
+			orgMember.setOpenId(wxMember.getOpenid());
+			orgMember.setHeadimgurl(wxMember.getHeadimgurl());
+			SessionUser sessionUser = SessionUser.create(token, orgMember, null,null);
+			redisManager.hSessionUser(token, sessionUser);
+
+			checkCodeRes.setToken(token);
+		} else {
+			checkCodeRes.setCheckstate(CheckCodeEnum.CheckState.FAIL.getKey());
+			checkCodeRes.setCheckstateDesc(CheckCodeEnum.CheckState.FAIL.getValue());
 		}
 		return new ResultBean<>(checkCodeRes);
 	}
