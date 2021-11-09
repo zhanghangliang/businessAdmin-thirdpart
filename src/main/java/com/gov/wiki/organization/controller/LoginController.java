@@ -107,7 +107,7 @@ public class LoginController {
 	/**
 	 * 需要授权登录
 	 */
-	public static final boolean needUserInfo = false;
+	public static final boolean needUserInfo = true;
 	/**
 	 * @Title: login
 	 * @Description: 用户登录
@@ -156,7 +156,7 @@ public class LoginController {
 		redisManager.hSessionUser(token, sessionUser);
 		return new ResultBean<String>(token);
 	}
-	
+
 	/**
 	 * 获取用户信息
 	 * @param request
@@ -188,7 +188,7 @@ public class LoginController {
 	}
 
 
-	
+
 	/**
 	 * @Title: logout
 	 * @Description: 用户登录
@@ -219,7 +219,7 @@ public class LoginController {
 		orgMember.setPassword(wxMember.getPassword());
 		orgMember.setRealName(wxMember.getRealName());
 		if(StringUtils.isNotBlank(wxMember.getRealName())) {
-			orgMember.setRealName(wxMember.getRealName());			
+			orgMember.setRealName(wxMember.getRealName());
 		}
 		orgMember.setSex(wxMember.getSex());
 		orgMember.setMobile(wxMember.getMobile());
@@ -274,6 +274,7 @@ public class LoginController {
 		JSONObject userInfo = getUserInfo(access_token, openid);
 		CheckUtil.notNull(userInfo, ResultCode.COMMON_ERROR,"微信获取用户信息失败");
 		WxMember wxMember = wxmemberService.findByOpenId(userInfo.getString("openid"));
+		log.info(userInfo.toJSONString());
 		if(wxMember==null){
 			wxMember = new WxMember();
 			wxMember.setName(userInfo.getString("nickname"));

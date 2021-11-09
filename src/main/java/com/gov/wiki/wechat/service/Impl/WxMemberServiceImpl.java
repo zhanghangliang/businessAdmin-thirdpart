@@ -13,12 +13,16 @@ import com.gov.wiki.organization.req.LoginReq;
 import com.gov.wiki.wechat.dao.WxMemberDao;
 import com.gov.wiki.wechat.service.WxMemberService;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.gov.wiki.common.utils.CheckUtil.check;
 
 @Service
+@Slf4j
 public class WxMemberServiceImpl extends BaseServiceImpl<WxMember, String, WxMemberDao> implements WxMemberService {
     @Override
     public WxMember externalLogin(LoginReq bean) {
@@ -42,9 +46,33 @@ public class WxMemberServiceImpl extends BaseServiceImpl<WxMember, String, WxMem
 	@Override
 	public Page<WxMember> pageByName(ReqBean<String> bean) {
 		PredicateBuilder<WxMember> builder = Specifications.and();
+		builder.isNotNull("idCard");
         if(StringUtils.isNotBlank(bean.getBody())) {
         	builder.like("realName", "%"+bean.getBody()+"%");
         }
         return this.baseRepository.findAll(builder.build(), bean.getHeader().getPageable());
 	}
+
+	@Override
+    public void deleteByMobile(String mobile) {
+        PredicateBuilder<WxMember> builder = Specifications.and();
+        builder.eq("mobile", mobile);
+        List<WxMember> all = this.baseRepository.findAll(builder.build());
+        log.info(mobile + " " + all.size());
+        if(all.size() > 0) {
+            this.deleteAll(all);
+        }
+    }
+
+    @Override
+    public void deleteByOpenId(String openId) {
+        PredicateBuilder<WxMember> builder = Specifications.or();
+        builder.eq("openid", openId);
+        builder.isNull("openid");
+        List<WxMember> all = this.baseRepository.findAll(builder.build());
+        log.info(openId + " " + all.size());
+        if(all.size() > 0) {
+            this.deleteAll(all);
+        }
+    }
 }

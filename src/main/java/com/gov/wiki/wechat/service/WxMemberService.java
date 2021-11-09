@@ -12,4 +12,8 @@ public interface WxMemberService extends IBaseService<WxMember, String> {
     WxMember findByMobile(String mobile);
     WxMember findByOpenId(String openid);
 	Page<WxMember> pageByName(ReqBean<String> bean);
+
+    void deleteByMobile(String mobile);
+
+    void deleteByOpenId(String openId);
 }

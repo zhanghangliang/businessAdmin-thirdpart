@@ -23,7 +23,7 @@ public class OperationEnum {
          * @throws
          */
         public static String getVal(int ec) {
-            for (OperationEnum.OperationStatus sc : OperationEnum.OperationStatus.values()) {
+            for (OperationStatus sc : OperationStatus.values()) {
                 if (sc.key == ec) {
                     return sc.value;
                 }
@@ -32,7 +32,7 @@ public class OperationEnum {
         }
 
         public static Integer getVal(String key) {
-            for (OperationEnum.OperationStatus sc : OperationEnum.OperationStatus.values()) {
+            for (OperationStatus sc : OperationStatus.values()) {
                 if (sc.value.equals(key)) {
                     return sc.key;
                 }

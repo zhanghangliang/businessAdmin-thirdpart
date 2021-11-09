@@ -34,7 +34,7 @@ import com.gov.wiki.organization.service.IMemberService;
 @Slf4j
 @Component
 public class MyRealm extends AuthorizingRealm {
-	
+
 	/**
 	 * 注入memberService
 	 */
@@ -74,7 +74,7 @@ public class MyRealm extends AuthorizingRealm {
         if (!JwtUtil.verify(token, username, openId)) {
             throw new AuthenticationException("TOKEN认证失败,Jwt校验未通过！");
         }
-        
+
         Date expiresDate = JwtUtil.getExpiresAt();
         Date currentDate = new Date();
         if(expiresDate == null || expiresDate.getTime() < currentDate.getTime()) {
@@ -85,20 +85,33 @@ public class MyRealm extends AuthorizingRealm {
         if (member == null) {
             throw new AuthenticationException("用户未登录，TOKEN无效！");
         }
-        OrgMember sysMember = null;
+        log.info(String.format("myrealm %s %s %s", member.getOpenId(), username, token));
+		OrgMember sysMember = null;
         if(StringUtils.isNotBlank(username)) {
         	sysMember = memberService.getByUsername(username);
         	if(sysMember==null){
-				WxMember byMobile = wxmemberService.findByOpenId(member.getOpenId());
-				if(byMobile!=null){
+				WxMember byOpenId = wxmemberService.findByOpenId(member.getOpenId());
+				if(byOpenId!=null){
 					OrgMember orgMember = new OrgMember();
-					orgMember.setPassword(byMobile.getPassword());
-					orgMember.setRealName(byMobile.getName());
-					orgMember.setSex(byMobile.getSex());
-					orgMember.setMobile(byMobile.getMobile());
+					orgMember.setPassword(byOpenId.getPassword());
+					orgMember.setRealName(byOpenId.getName());
+					orgMember.setSex(byOpenId.getSex());
+					orgMember.setMobile(byOpenId.getMobile());
 					orgMember.setStatus(StatusEnum.ENABLE.getValue());
-					orgMember.setOpenId(byMobile.getOpenid());
+					orgMember.setOpenId(byOpenId.getOpenid());
 					sysMember=orgMember;
+				} else {
+					WxMember byMobile = wxmemberService.findByMobile(member.getMobile());
+					if(byMobile!=null){
+						OrgMember orgMember = new OrgMember();
+						orgMember.setPassword(byMobile.getPassword());
+						orgMember.setRealName(byMobile.getName());
+						orgMember.setSex(byMobile.getSex());
+						orgMember.setMobile(byMobile.getMobile());
+						orgMember.setStatus(StatusEnum.ENABLE.getValue());
+						orgMember.setOpenId(byMobile.getOpenid());
+						sysMember=orgMember;
+					}
 				}
 			}
         }

@@ -43,13 +43,17 @@ public class WxOperationRecord extends BaseEntity {
 	@Column(name = "member_id", nullable = true)
     private String memberId;
 	
+	
+	@Formula("(select o.real_name from org_member o where o.id=member_id)")
+	private String auditName;
+	
 	/**
 	 * 操作人员
 	 */
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ApiModelProperty(value = "操作人员")
 	@ManyToOne(cascade = CascadeType.REFRESH, optional = true, fetch = FetchType.EAGER)
-	@JoinColumn(name = "member_id", insertable = false, updatable = false)
+	@JoinColumn(name = "create_by", insertable = false, updatable = false)
 	private WxMember member;
     
 	@ApiModelProperty(value = "选项结果")
@@ -96,9 +100,7 @@ public class WxOperationRecord extends BaseEntity {
 	@Column(name = "change_audit",nullable = true)
 	private Integer changeAudit;
 	
-	@Formula("(select o.username from org_member o where o.id="
-			+ "(select a.create_by from wx_operation_record_audit a where a.record_id=id order by create_time desc limit 0,1))")
-	private String auditName;
+	
 	
 	
 	@ApiModelProperty(value = "操作记录列表")

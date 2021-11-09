@@ -45,7 +45,7 @@ import com.gov.wiki.wechat.service.WxOperationRecordService;
 
 @Service
 public class WxOperationRecordServiceImpl extends BaseServiceImpl<WxOperationRecord, String, WxOperationRecordDao> implements WxOperationRecordService {
-    
+
 	@Autowired
 	private WxOperationRecordCountService operationRecordCountService;
 	@Autowired
@@ -54,17 +54,17 @@ public class WxOperationRecordServiceImpl extends BaseServiceImpl<WxOperationRec
 	private WxOperationRecordResultDao wxOperationRecordResultDao;
 	@Autowired
 	private WxOperationRecordAuditDao wxOperationRecordAuditDao;
-	
+
 	@Autowired
 	private RedisManager redisManager;
-	
+
 	@Override
     public List<WxOperationRecord> findByMemberId(String memberId) {
         return this.baseRepository.findByMemberId(memberId);
     }
-	
-	
-	
+
+
+
 
     @Override
     public Page<WxOperationRecord> findAll(Specification specification, Pageable pageable) {
@@ -94,7 +94,7 @@ public class WxOperationRecordServiceImpl extends BaseServiceImpl<WxOperationRec
 		wxOperationRecord.setStatus(OperationStatus.submit.getKey());
 		return doAddRecord(req, wxOperationRecord);
 	}
-	
+
 	@Override
 	public WxOperationRecord findById(String id) {
 		WxOperationRecord wor = super.findById(id);
@@ -126,8 +126,8 @@ public class WxOperationRecordServiceImpl extends BaseServiceImpl<WxOperationRec
 		}
 		return null;
 	}
-	
-	
+
+
 	private PredicateBuilder<WxOperationRecord> createBuilder(OperationQuery query){
 		PredicateBuilder<WxOperationRecord> builder = Specifications.and();
 		if(query.getStatusList() != null && !query.getStatusList().isEmpty()) {
@@ -207,18 +207,19 @@ public class WxOperationRecordServiceImpl extends BaseServiceImpl<WxOperationRec
 		WxOperationRecord wor = this.findById(req.getId());
 		WxOperationRecordAudit audit=new WxOperationRecordAudit();
 		CheckUtil.notNull(wor, ResultCode.COMMON_ERROR, "待审核操作记录不存在");
-		if (wor.getStatus()==OperationEnum.OperationStatus.submit.getKey()){
+		if (wor.getStatus()== OperationStatus.submit.getKey()){
 			if(req.getStatus() == 1) {
-				wor.setAuditStatus(OperationEnum.OperationStatus.pass.getKey());
-				wor.setStatus(OperationEnum.OperationStatus.pass.getKey());
-				audit.setStatus(OperationEnum.OperationStatus.pass.getKey());
+				wor.setAuditStatus(OperationStatus.pass.getKey());
+				wor.setStatus(OperationStatus.pass.getKey());
+				audit.setStatus(OperationStatus.pass.getKey());
 			}else if(req.getStatus() == 2) {
-				wor.setAuditStatus(OperationEnum.OperationStatus.refuse.getKey());
-				wor.setStatus(OperationEnum.OperationStatus.refuse.getKey());
-				audit.setStatus(OperationEnum.OperationStatus.refuse.getKey());
+				wor.setAuditStatus(OperationStatus.refuse.getKey());
+				wor.setStatus(OperationStatus.refuse.getKey());
+				audit.setStatus(OperationStatus.refuse.getKey());
 			}else {
 				CheckUtil.check(false, ResultCode.COMMON_ERROR, "审核状态参数错误");
 			}
+			wor.setMemberId(userId);
 			wor.setReason(req.getOpinion());
 			audit.setReason(req.getOpinion());
 			audit.setCreateBy(userId);
@@ -244,12 +245,12 @@ public class WxOperationRecordServiceImpl extends BaseServiceImpl<WxOperationRec
 		wxOperationRecord.setRecordType(2);
 		if(req.getHasSubmit()) {
 			audit.setReason("提交审核");
-			audit.setStatus(OperationEnum.OperationStatus.submit.getKey());
+			audit.setStatus(OperationStatus.submit.getKey());
 			wxOperationRecord.setStatus(OperationStatus.submit.getKey());
 			wxOperationRecord.setAuditStatus(OperationStatus.submit.getKey());
 		} else {
 			audit.setReason("保存");
-			audit.setStatus(OperationEnum.OperationStatus.save.getKey());
+			audit.setStatus(OperationStatus.save.getKey());
 			wxOperationRecord.setStatus(OperationStatus.save.getKey());
 				wxOperationRecord.setAuditStatus(OperationStatus.save.getKey());
 		}
@@ -262,7 +263,7 @@ public class WxOperationRecordServiceImpl extends BaseServiceImpl<WxOperationRec
 		audit.setRecordId(wxOperationRecord.getId());
 		this.wxOperationRecordAuditDao.save(audit);
 		return wxOperationRecord;
-		
+
 	}
 
 	private WxOperationRecord doAddRecord(OperationReq req, WxOperationRecord wxOperationRecord) {
@@ -316,11 +317,11 @@ public class WxOperationRecordServiceImpl extends BaseServiceImpl<WxOperationRec
 		CheckUtil.notNull(operationRecord, ResultCode.DATA_NOT_EXIST, "预审材料");
 		WxOperationRecordAudit audit = new WxOperationRecordAudit();
 		if(operationRecord.getAuditStatus()==0 || operationRecord.getAuditStatus()==4){
-			operationRecord.setAuditStatus(OperationEnum.OperationStatus.submit.getKey());
-			operationRecord.setStatus(OperationEnum.OperationStatus.submit.getKey());
+			operationRecord.setAuditStatus(OperationStatus.submit.getKey());
+			operationRecord.setStatus(OperationStatus.submit.getKey());
 			audit.setRecordId(operationRecord.getId());
 			audit.setReason("提交审核");
-			audit.setStatus(OperationEnum.OperationStatus.submit.getKey());
+			audit.setStatus(OperationStatus.submit.getKey());
 		}else {
 			CheckUtil.check(false,ResultCode.COMMON_ERROR,"只有保存状态，或者审核未通过才可以提交审核");
 		}

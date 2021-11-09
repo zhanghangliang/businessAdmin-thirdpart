@@ -2,6 +2,7 @@ package com.gov.wiki.wechat.controller;
 
 import com.github.wenhao.jpa.Specifications;
 import com.gov.wiki.aspect.ControllerMonitor;
+import com.gov.wiki.business.req.query.SubjectQuery;
 import com.gov.wiki.business.service.BizMatterDepositoryMainService;
 import com.gov.wiki.business.service.ISubjectService;
 import com.gov.wiki.common.beans.ResultBean;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -38,6 +40,8 @@ public class SearchController {
 	private IFileService fileService;
     @Autowired
     private BizMatterDepositoryMainService bizMatterDepositoryMainService;
+    @Autowired
+    private ISubjectService subjectService;
 
 
     @PostMapping(value = "/getAllsearch")
@@ -72,22 +76,15 @@ public class SearchController {
     @PostMapping(value = "/addsearchhistory")
     @ApiOperation(value = "搜索")
     @ControllerMonitor(description = "搜索", operType = 2)
-    public ResultBean<Page<BizMatterDepositoryMain>> addsearchhistory(@RequestBody ReqBean<WxSearchRecord> bean){
+    public ResultBean<Page<BizSubject>> addsearchhistory(@RequestBody ReqBean<WxSearchRecord> bean){
         WxSearchRecord body = bean.getBody();
-        ReqHeader header = bean.getHeader();
-        Specification<BizMatterDepositoryMain> specification = Specifications.<BizMatterDepositoryMain>and()
-                .eq("attribute", 1)
-                .like(StringUtils.isNotBlank(body.getSearchContent()),"matterName","%" + body.getSearchContent() + "%")
-                .build();
-        Page<BizMatterDepositoryMain> all = bizMatterDepositoryMainService.findAll(specification, header.getPageable());
-        List<BizMatterDepositoryMain> list = all.getContent();
-        if(list != null && !list.isEmpty()) {
-			for(BizMatterDepositoryMain main:list) {
-				if(main != null && StringUtils.isNotBlank(main.getProcessFlow())) {
-		        	main.setProcessFlowFiles(fileService.findByReferenceId(main.getProcessFlow()));
-		        }
-			}
-		}
+        ReqBean<SubjectQuery> bean1 = new ReqBean<SubjectQuery>();
+        bean1.setHeader(bean.getHeader());
+        SubjectQuery q = new SubjectQuery();
+        q.setRecyclingMark(false);
+        q.setKeywords(body.getSearchContent());
+        q.setMajorCategorys(Arrays.asList(1));
+        Page<BizSubject> all = subjectService.page(bean1);
         body.setSearchType(0);
         searchRecordService.saveOrUpdate(body);
         WxSearchRecord bySearchContent = searchRecordService.findBySearchContent(body.getSearchContent());

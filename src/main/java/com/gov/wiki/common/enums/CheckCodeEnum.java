@@ -3,8 +3,7 @@ package com.gov.wiki.common.enums;
 public class CheckCodeEnum {
     public enum CheckState{
         FAIL(0,"失败"),
-        SUCCESS(1,"通过"),
-        DOES_NOT_EXIST(-1,"此手机号未注册");
+        SUCCESS(1,"通过");
 
         private int key;
         private String value;
@@ -21,7 +20,7 @@ public class CheckCodeEnum {
          * @throws
          */
         public static String getVal(int ec) {
-            for (CheckCodeEnum.CheckState sc : CheckCodeEnum.CheckState.values()) {
+            for (CheckState sc : CheckState.values()) {
                 if (sc.key == ec) {
                     return sc.value;
                 }
@@ -30,7 +29,7 @@ public class CheckCodeEnum {
         }
 
         public static Integer getVal(String key) {
-            for (CheckCodeEnum.CheckState sc : CheckCodeEnum.CheckState.values()) {
+            for (CheckState sc : CheckState.values()) {
                 if (sc.value.equals(key)) {
                     return sc.key;
                 }

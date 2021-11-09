@@ -21,7 +21,7 @@ public class StudyEnum {
          * @throws
          */
         public static String getVal(int ec) {
-            for (StudyEnum.StudyType sc : StudyEnum.StudyType.values()) {
+            for (StudyType sc : StudyType.values()) {
                 if (sc.key == ec) {
                     return sc.value;
                 }
@@ -30,7 +30,7 @@ public class StudyEnum {
         }
 
         public static Integer getVal(String key) {
-            for (StudyEnum.StudyType sc : StudyEnum.StudyType.values()) {
+            for (StudyType sc : StudyType.values()) {
                 if (sc.value.equals(key)) {
                     return sc.key;
                 }

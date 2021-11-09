@@ -21,7 +21,7 @@ public class MatterEnum {
          * @throws
          */
         public static String getVal(int ec) {
-            for (MatterEnum.Attribute sc : MatterEnum.Attribute.values()) {
+            for (Attribute sc : Attribute.values()) {
                 if (sc.key == ec) {
                     return sc.value;
                 }
@@ -30,7 +30,7 @@ public class MatterEnum {
         }
 
         public static Integer getVal(String key) {
-            for (MatterEnum.Attribute sc : MatterEnum.Attribute.values()) {
+            for (Attribute sc : Attribute.values()) {
                 if (sc.value.equals(key)) {
                     return sc.key;
                 }
@@ -88,7 +88,7 @@ public class MatterEnum {
          * @throws
          */
         public static String getVal(int ec) {
-            for (MatterEnum.Territory sc : MatterEnum.Territory.values()) {
+            for (Territory sc : Territory.values()) {
                 if (sc.key == ec) {
                     return sc.value;
                 }
@@ -97,7 +97,7 @@ public class MatterEnum {
         }
 
         public static Integer getVal(String key) {
-            for (MatterEnum.Territory sc : MatterEnum.Territory.values()) {
+            for (Territory sc : Territory.values()) {
                 if (sc.value.equals(key)) {
                     return sc.key;
                 }
@@ -156,7 +156,7 @@ public class MatterEnum {
          * @throws
          */
         public static String getVal(int ec) {
-            for (MatterEnum.MatterType sc : MatterEnum.MatterType.values()) {
+            for (MatterType sc : MatterType.values()) {
                 if (sc.key == ec) {
                     return sc.value;
                 }
@@ -165,7 +165,7 @@ public class MatterEnum {
         }
 
         public static Integer getVal(String key) {
-            for (MatterEnum.MatterType sc : MatterEnum.MatterType.values()) {
+            for (MatterType sc : MatterType.values()) {
                 if (sc.value.equals(key)) {
                     return sc.key;
                 }

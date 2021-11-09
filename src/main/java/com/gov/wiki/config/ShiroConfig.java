@@ -62,7 +62,11 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/echo", "anon");
 		filterChainDefinitionMap.put("/getechostr/**", "anon");
 
-		filterChainDefinitionMap.put("/Wx/**", "anon");
+		filterChainDefinitionMap.put("/Wx/loginByPlatform", "anon");
+		filterChainDefinitionMap.put("/Wx/deleteByMobile", "anon");
+		filterChainDefinitionMap.put("/Wx/deleteByOpenId", "anon");
+		filterChainDefinitionMap.put("/Wx/deleteTokenSession", "anon");
+		filterChainDefinitionMap.put("/Wx/saveOrUpdate", "anon");
 		// 添加自己的过滤器并且取名为jwt
 		Map<String, Filter> filterMap = new HashMap<String, Filter>(1);
 		filterMap.put("jwt", new JwtFilter());
