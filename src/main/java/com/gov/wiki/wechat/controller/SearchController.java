@@ -84,6 +84,7 @@ public class SearchController {
         q.setRecyclingMark(false);
         q.setKeywords(body.getSearchContent());
         q.setMajorCategorys(Arrays.asList(1));
+        bean1.setBody(q);
         Page<BizSubject> all = subjectService.page(bean1);
         body.setSearchType(0);
         searchRecordService.saveOrUpdate(body);

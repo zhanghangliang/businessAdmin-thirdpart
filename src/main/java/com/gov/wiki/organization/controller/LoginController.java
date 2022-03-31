@@ -247,6 +247,8 @@ public class LoginController {
 		SessionUser user = (SessionUser) redisManager.getSessionUser(token);
 		WxMember wxMember = wxmemberService.findById(user.getMember().getId());
 		WxMemberBasicRes res = BeanUtils.copyProperties(wxMember, WxMemberBasicRes.class);
+		res.setRealName(res.getRealName().charAt(0) + "*");
+		res.setIdCard(res.getIdCard().substring(0, 6) + "********"+res.getIdCard().substring(res.getIdCard().length()-4));
 		return new ResultBean<>(res);
 	}
 
